@@ -1,0 +1,33 @@
+# Use a base image that works on ARM64
+FROM arm64v8/node:18-alpine
+
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser -S -u 1001 -G nodejs nextjs
+
+# Copy package files
+COPY src/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY src/ ./
+
+# Build the application
+RUN npm run build
+
+# Create data directory
+RUN mkdir -p /data-jdih && chown -R nextjs:nodejs /data-jdih
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Start application without docker-entrypoint
+ENTRYPOINT []
+CMD ["node", "server.js"]

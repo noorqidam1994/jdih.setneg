@@ -1,0 +1,66 @@
+services:
+  jdih-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_APP_DOMAIN=
+      - DB_HOST=db
+      - DB_DATABASE=jdih
+      - DB_USERNAME=jdih_user
+      - DB_PASSWORD=jdih_password
+      - DB_PORT=3306
+      - DB_CONNECTION=mysqli
+      - NEXT_PUBLIC_FIREBASE_PUBLIC_API_KEY=AIzaSyAC8EOWZBue3mKIb37tcOgyU9sroGnp-gM
+      - NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=kelimpujdih.firebaseapp.com
+      - NEXT_PUBLIC_FIREBASE_PROJECT_ID=kelimpujdih
+    volumes:
+      - jdih-data:/data-jdih
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - jdih-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=jdih
+      - MYSQL_USER=jdih_user
+      - MYSQL_PASSWORD=jdih_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    networks:
+      - jdih-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=rootpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - jdih-network
+
+volumes:
+  jdih-data:
+  mysql-data:
+
+networks:
+  jdih-network:
+    driver: bridge
