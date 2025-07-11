@@ -10,7 +10,6 @@ const isProd = process.env.NODE_ENV === 'production';
       typescript: {
         ignoreBuildErrors: true,
       },
-      output: "standalone",
       distDir: 'build',
       eslint: {
         ignoreDuringBuilds: true,
