@@ -44,6 +44,5 @@
     "undici": "^6.20.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
   }
 }

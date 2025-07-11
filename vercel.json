@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd src && npm run build",
+  "buildCommand": "cd src && npm install cross-env && npm run build",
   "outputDirectory": "src/build",
   "installCommand": "cd src && npm install"
 }
